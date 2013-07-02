@@ -100,5 +100,10 @@ describe Lingua::EN::Readability do
       @report.words_per_sentence.should be_close(17.0, 0.001)
     end
   end
-  
+
+  describe "#FORCAST index" do
+    it "should be the correct FORCAST index" do
+      @report.forcast.should be_within(0.001).of(9.00)
+    end
+  end
 end

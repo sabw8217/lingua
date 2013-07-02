@@ -16,6 +16,7 @@ module Lingua
         @frequencies.default = 0
         @syllables           = 0
         @complex_words       = 0
+        @single_syllable_words = 0
         count_words
       end
 
@@ -105,6 +106,12 @@ module Lingua
         ( @complex_words.to_f / words.length.to_f ) * 100
       end
 
+      def forcast
+        # FORCAST is defined as number of single syllable words in a 150 word sample
+        # we scale the total length to 150 words instead.
+        20 - (@single_syllable_words * (150 / words.length.to_f) / 10)
+      end
+
       # Return a nicely formatted report on the sample, showing most the useful
       # statistics about the text sample.
       def report
@@ -116,10 +123,11 @@ module Lingua
         "Average syllables per word     %.2f \n\n" <<
         "Flesch score                   %2.2f \n" <<
         "Flesh-Kincaid grade level      %2.2f \n" <<
-        "Fog Index                      %2.2f \n",
+        "Fog Index                      %2.2f \n" <<
+        "FORCAST grade level            %2.2f \n",
           num_paragraphs, num_sentences, num_words, num_characters,
           words_per_sentence, syllables_per_word,
-          flesch, kincaid, fog
+          flesch, kincaid, fog, forcast
       end
 
       private
@@ -136,6 +144,8 @@ module Lingua
           @syllables += syllables
           if syllables > 2 && !word.include?('-')
             @complex_words += 1 # for Fog Index
+          elsif syllables == 1
+            @single_syllable_words += 1 # for FORCAST
           end
         end
       end
